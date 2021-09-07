@@ -15,7 +15,7 @@ func DebugLog() gin.HandlerFunc {
 			if err == nil {
 				rawData, err := ioutil.ReadAll(body)
 				if err == nil {
-					mario.ZapSugaredLogger.Debug(rawData)
+					mario.ZapSugaredLogger.Debug(string(rawData))
 					mario.ZapLogger.Debug("request", zap.ByteString("body", rawData))
 				}
 			}
