@@ -4,7 +4,6 @@ import (
 	"github.com/bpcoder16/Mario/mario"
 	"github.com/bpcoder16/Mario/utils"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"io/ioutil"
 )
 
@@ -15,8 +14,7 @@ func DebugLog() gin.HandlerFunc {
 			if err == nil {
 				rawData, err := ioutil.ReadAll(body)
 				if err == nil {
-					mario.ZapSugaredLogger.Debug(string(rawData))
-					mario.ZapLogger.Debug("request", zap.ByteString("body", rawData))
+					mario.ZapSugaredLogger.Debug("requestBody", string(rawData))
 				}
 			}
 		}
