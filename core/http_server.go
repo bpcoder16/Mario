@@ -18,7 +18,7 @@ func runGin(manager RouterManager) (r *gin.Engine) {
 	// Creates a router without any middleware by default
 	r = gin.New()
 
-	r.Use(middleware.DebugLog())
+	r.Use(middleware.Log())
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.RecoveryWithWriter(mario.PanicIOWriter))
