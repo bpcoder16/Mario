@@ -1,14 +1,11 @@
 package core
 
 import (
-	"bytes"
 	"github.com/bpcoder16/Mario/mario"
 	"github.com/bpcoder16/Mario/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"golang.org/x/sync/errgroup"
-	"io"
-	"io/ioutil"
 )
 
 type RouterManager func(r *gin.Engine)
@@ -56,13 +53,4 @@ func RunMultiHttpServer(configList []HttpServerConfig) {
 	if err := g.Wait(); err != nil {
 		mario.ZapSugaredLogger.Fatal(err)
 	}
-}
-
-func GetBodyClone(ctx *gin.Context) (io.ReadCloser, error) {
-	r, err := ioutil.ReadAll(ctx.Request.Body)
-	if err != nil {
-		return nil, err
-	}
-	ctx.Request.Body = ioutil.NopCloser(bytes.NewReader(r))
-	return ioutil.NopCloser(bytes.NewReader(r)), nil
 }
