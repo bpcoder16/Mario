@@ -1,10 +1,14 @@
 package core
 
 import (
+	"bytes"
 	"github.com/bpcoder16/Mario/mario"
+	"github.com/bpcoder16/Mario/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"golang.org/x/sync/errgroup"
+	"io"
+	"io/ioutil"
 )
 
 type RouterManager func(r *gin.Engine)
@@ -16,6 +20,9 @@ func runGin(manager RouterManager) (r *gin.Engine) {
 	}
 	// Creates a router without any middleware by default
 	r = gin.New()
+
+	r.Use(middleware.DebugLog())
+
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.RecoveryWithWriter(mario.PanicIOWriter))
 
@@ -49,4 +56,13 @@ func RunMultiHttpServer(configList []HttpServerConfig) {
 	if err := g.Wait(); err != nil {
 		mario.ZapSugaredLogger.Fatal(err)
 	}
+}
+
+func GetBodyClone(ctx *gin.Context) (io.ReadCloser, error) {
+	r, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		return nil, err
+	}
+	ctx.Request.Body = ioutil.NopCloser(bytes.NewReader(r))
+	return ioutil.NopCloser(bytes.NewReader(r)), nil
 }
